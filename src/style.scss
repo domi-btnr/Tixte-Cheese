@@ -1,0 +1,44 @@
+:root {
+    --base-background: #0f0f0f;
+    --raised-background: #212121;
+    --menu-background: #282828;
+    --inverted-background: #f1f1f1;
+    --text-primary: #fff;
+}
+
+body {
+    background: var(--base-background);
+    color: var(--text-primary);
+    font-family: "Roboto", "Arial", sans-serif;
+}
+
+.container {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.header {
+    font-size: 26px;
+    font-weight: 700;
+}
+
+.button {
+    height: 32px;
+    min-width: 12px;
+    padding: 0 10px;
+    border-radius: 16px;
+    cursor: pointer;
+    user-select: none;
+    box-sizing: border-box;
+    text-align: center;
+    background-color: var(--raised-background);
+    color: var(--text-primary);
+    transition: all ease-in-out 300ms;
+
+    &:hover {
+        background-color: var(--inverted-background);
+        color: var(--menu-background);
+    }
+}

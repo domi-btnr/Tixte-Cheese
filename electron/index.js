@@ -16,8 +16,8 @@ const store = new Store({
 
 const createWindow = () => {
     const win = new BrowserWindow({
-        width: 800,
-        height: 600,
+        width: 600,
+        height: 400,
         resizable: false,
         minimizable: false,
         maximizable: false,
@@ -68,4 +68,9 @@ ipcMain.on("authToken", (_, data) => {
     data = JSON.parse(data);
     store.set("authToken", data?.access_token)
     BrowserWindow.getAllWindows()[0].webContents.send("updateStore", { authToken: data?.access_token });
+});
+
+ipcMain.on("logout", () => {
+    store.delete("authToken");
+    BrowserWindow.getAllWindows()[0].webContents.send("updateStore", { authToken: "" });
 });
