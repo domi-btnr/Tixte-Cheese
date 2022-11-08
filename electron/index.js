@@ -30,14 +30,15 @@ const createWindow = () => {
 
     win.loadURL(isDev ? "http://localhost:3000" : `file://${path.join(__dirname, "../build/index.html")}`);
 
+    if (store.get("authToken")) ipcMain.emit("authenticate");
+
     win.once("ready-to-show", () => {
         app.dock.show();
         win.show();
 
         win.webContents.send("updateStore", {
             keybinds: store.get("keybinds"),
-            domain: store.get("domain"),
-            authToken: store.get("authToken")
+            domain: store.get("domain")
         });
     });
     if (isDev) win.webContents.openDevTools({ mode: "detach" });
@@ -46,9 +47,9 @@ const createWindow = () => {
 
 app.on("ready", async () => {
     app.dock.hide();
-    
+
     await require("./server.js")();
-    await require("./auth.js")();
+    await require("./auth.js")(store, BrowserWindow);
 
     const icon = nativeImage.createFromPath(path.join(__dirname, "../public/cheese.png")).resize({ width: 18, height: 18 });
     const tray = new Tray(icon);
@@ -67,10 +68,12 @@ app.on("window-all-closed", () => {
 ipcMain.on("authToken", (_, data) => {
     data = JSON.parse(data);
     store.set("authToken", data?.access_token)
-    BrowserWindow.getAllWindows()[0].webContents.send("updateStore", { authToken: data?.access_token });
+    ipcMain.emit("authenticate");
 });
 
-ipcMain.on("logout", () => {
-    store.delete("authToken");
-    BrowserWindow.getAllWindows()[0].webContents.send("updateStore", { authToken: "" });
+ipcMain.on("updateStore", (_, data) => {
+    const [key, value] = Object.entries(data)[0];
+    store.set(key, value);
+    const storeData = { ...{ keybinds: store.get("keybinds"), domain: store.get("domain") }, ...data };
+    BrowserWindow.getAllWindows()[0].webContents.send("updateStore", storeData)
 });

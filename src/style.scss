@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
     --base-background: #0f0f0f;
     --raised-background: #212121;
@@ -12,19 +16,12 @@ body {
     font-family: "Roboto", "Arial", sans-serif;
 }
 
-.container {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-}
-
 .header {
     font-size: 26px;
     font-weight: 700;
 }
 
-.button {
+.btn {
     height: 32px;
     min-width: 12px;
     padding: 0 10px;
@@ -35,10 +32,47 @@ body {
     text-align: center;
     background-color: var(--raised-background);
     color: var(--text-primary);
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
     transition: all ease-in-out 300ms;
 
     &:hover {
         background-color: var(--inverted-background);
         color: var(--menu-background);
+    }
+}
+
+.row {
+    margin-left: 6px !important;
+    margin-right: 6px !important;
+}
+
+hr {
+    width: 100%;
+    border-color: rgb(49, 49, 49);
+}
+
+.dropdown {
+    height: 40px;
+    background-color: var(--menu-background);
+    text-align: left;
+    padding: 8px;
+    outline: none;
+    border-width: 1px;
+    border-style: solid;
+    border-color: var(--base-background);
+    border-image: initial;
+    border-radius: 8px;
+    margin: auto;
+    transition: all ease-in-out 300ms;
+
+    &:focus,
+    &:hover {
+        border-width: 1px;
+        border-style: solid;
+        border-color: var(--raised-background);
+        background-color: var(--raised-background);
+        border-image: initial;
     }
 }
