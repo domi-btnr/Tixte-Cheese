@@ -82,7 +82,7 @@ app.on("will-quit", () => {
 });
 
 ipcMain.on("authToken", (_, data) => {
-    store.set("authToken", data?.access_token)
+    store.set("authToken", data.access_token)
     ipcMain.emit("authenticate");
 });
 

@@ -19,8 +19,8 @@ module.exports = async () => {
                 body: JSON.stringify({ code: req.query.code })
             })
             const body = await resp.json();
-            if (!body.access_token) return res.redirect(authLink);
-            ipcMain.emit("authToken", null, body.data)
+            if (!body?.access_token) return res.redirect(authLink);
+            ipcMain.emit("authToken", null, body)
             res.status(200).send("You can now close this window")
         } catch (e) {
             return res.status(500).send(`Internal Server Error: ${e.message}`);
