@@ -19,7 +19,6 @@ module.exports = async () => {
                 body: JSON.stringify({ code: req.query.code })
             })
             const body = await resp.json();
-            console.log(body)
             if (!body.access_token) return res.redirect(authLink);
             ipcMain.emit("authToken", null, body.data)
             res.status(200).send("You can now close this window")
