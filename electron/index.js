@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Tray, nativeImage, ipcMain } = require("electron");
+const { app, BrowserWindow, globalShortcut, ipcMain, nativeImage, Tray } = require("electron");
 const path = require("path");
 const isDev = require("electron-is-dev");
 
@@ -45,6 +45,17 @@ const createWindow = () => {
     win.on("close", () => app.dock.hide());
 };
 
+const registerKeybind = (keybind, type) => {
+    globalShortcut.register(keybind.join("+"), () => {
+        if (type === "image") {
+            console.log("Image Keybind pressed");
+        }
+        else if (type === "video") {
+            console.log("Video Keybind pressed");
+        };
+    });
+}
+
 app.on("ready", async () => {
     app.dock.hide();
 
@@ -59,10 +70,19 @@ app.on("ready", async () => {
         if (BrowserWindow.getAllWindows().length === 0) createWindow();
         else BrowserWindow.getAllWindows()[0].show();
     });
+
+    Object.entries(store.get("keybinds")).forEach(obj => {
+        if (!obj[1].length) return;
+        registerKeybind(obj[1], obj[0]);
+    });
 });
 
 app.on("window-all-closed", () => {
     if (process.platform !== "darwin") app.quit();
+});
+
+app.on("will-quit", () => {
+    globalShortcut.unregisterAll();
 });
 
 ipcMain.on("authToken", (_, data) => {
@@ -75,4 +95,13 @@ ipcMain.on("updateStore", (_, data) => {
     store.set(key, value);
     const storeData = { ...{ keybinds: store.get("keybinds"), domain: store.get("domain") }, ...data };
     BrowserWindow.getAllWindows()[0].webContents.send("updateStore", storeData)
+});
+
+ipcMain.on("updateKeybind", (_, data) => {
+    globalShortcut.unregisterAll();
+    if (!data) return;
+    Object.entries(data).forEach(obj => {
+        if (!obj[1].length) return;
+        registerKeybind(obj[1], obj[0]);
+    });
 });

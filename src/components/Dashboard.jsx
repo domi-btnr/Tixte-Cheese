@@ -12,12 +12,29 @@ export default function Dashboard(props) {
     const handleChange = (v) => props.IPC.send("updateStore", JSON.parse(`{"${v.target.name}": "${v.target.value}"}`));
 
     const handleKeydown = (e) => {
-        const key = e.key.toUpperCase().replace(" ", "SPACE").replace("META", "COMMAND");
+        const key = e.key.toUpperCase().replace(" ", "SPACE").replace("META", "COMMAND").replace("ALT", "OPTION");
         const id = e.target.id;
         if (keybinds[id].includes(key)) return;
-        setKeybinds({ ...keybinds, [id]: [...keybinds[id], key] });
-        console.log([id].reduce((a, b) => a[b], keybinds));
-        if ([id].reduce((a, b) => a[b], keybinds).length >= 3) refs[id].current.blur();
+        const _keybinds = { ...keybinds, [id]: [...keybinds[id], key] };
+        setKeybinds(_keybinds);
+        if (_keybinds[id].length >= 3) {
+            refs[id].current.classList.remove("recording");
+            props.IPC.send("updateStore", { keybinds: _keybinds });
+            props.IPC.send("updateKeybind", _keybinds);
+            refs[id].current.blur();
+        }
+    };
+
+    const parseKeys = (keys) => {
+        return keys.map((key) => {
+            return key
+                .replace("SPACE", "␣")
+                .replace("SHIFT", "⇧")
+                .replace("CONTROL", "⌃")
+                .replace("CAPSLOCK", "⇪")
+                .replace("COMMAND", "⌘")
+                .replace("OPTION", "⌥");
+        });
     };
 
     return (
@@ -77,22 +94,23 @@ export default function Dashboard(props) {
                             readOnly={true}
                             value={
                                 keybinds.image.length
-                                    ? keybinds.image.join(" + ")
+                                    ? parseKeys(keybinds.image).join(" + ")
                                     : props.store?.keybinds?.image?.length
-                                    ? props.store?.keybinds?.image.join(" + ")
+                                    ? parseKeys(props.store?.keybinds?.image).join(" + ")
                                     : "No keybind set"
                             }
                             onKeyDown={(e) => handleKeydown(e)}
                             onFocus={() => {
+                                props.IPC.send("updateKeybind");
                                 setKeybinds({ image: [], video: [...props.store.keybinds.video] });
                                 imageRef.current.classList.add("recording");
                             }}
                             onBlur={() => {
+                                if (!imageRef.current.classList.contains("recording")) return;
                                 imageRef.current.classList.remove("recording");
                                 if (!keybinds.image.length) return;
-                                props.IPC.send("updateStore", {
-                                    keybinds: keybinds,
-                                });
+                                props.IPC.send("updateStore", { keybinds: keybinds });
+                                props.IPC.send("updateKeybind", keybinds);
                             }}
                         />
                     </div>
@@ -105,22 +123,23 @@ export default function Dashboard(props) {
                             readOnly={true}
                             value={
                                 keybinds.video.length
-                                    ? keybinds.video.join(" + ")
+                                    ? parseKeys(keybinds.video).join(" + ")
                                     : props.store?.keybinds?.video?.length
-                                    ? props.store?.keybinds?.video.join(" + ")
+                                    ? parseKeys(props.store?.keybinds?.video).join(" + ")
                                     : "No keybind set"
                             }
                             onKeyDown={(e) => handleKeydown(e)}
                             onFocus={() => {
+                                props.IPC.send("updateKeybind");
                                 setKeybinds({ image: [...props.store.keybinds.image], video: [] });
                                 videoRef.current.classList.add("recording");
                             }}
                             onBlur={() => {
-                                videoRef.current.classList.remove("recording");
-                                if (!keybinds.video.length) return;
-                                props.IPC.send("updateStore", {
-                                    keybinds: keybinds,
-                                });
+                                if (!imageRef.current.classList.contains("recording")) return;
+                                imageRef.current.classList.remove("recording");
+                                if (!keybinds.image.length) return;
+                                props.IPC.send("updateStore", { keybinds: keybinds });
+                                props.IPC.send("updateKeybind", keybinds);
                             }}
                         />
                     </div>
