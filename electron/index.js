@@ -48,9 +48,7 @@ const createWindow = () => {
 const addKeybind = (keybind, type) => {
     globalShortcut.register(keybind.join("+"), () => {
         if (type === "image") require("./capture.js").makeImage(store);
-        else if (type === "video") {
-            console.log("Video Keybind pressed");
-        };
+        else if (type === "video") require("./capture.js").makeVideo(store);
     });
 }
 

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Dashboard, Login } from "./components";
 import "./style.scss";
 
@@ -9,10 +9,6 @@ export default function App() {
     IPC.on("updateStore", (_, data) => {
         setStore({ ...store, ...data });
     });
-
-    useEffect(() => {
-        console.log(store);
-        return () => console.log("Updated store");
-    }, [store]);
+    
     return store?.user ? <Dashboard store={store} IPC={IPC} /> : <Login IPC={IPC} />;
 }
