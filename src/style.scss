@@ -11,8 +11,9 @@
 }
 
 body {
-    background: var(--base-background);
+    user-select: none;
     color: var(--text-primary);
+    background: var(--base-background);
     font-family: "Roboto", "Arial", sans-serif;
 }
 
@@ -25,54 +26,65 @@ body {
     height: 32px;
     min-width: 12px;
     padding: 0 10px;
-    border-radius: 16px;
     cursor: pointer;
-    user-select: none;
+    border-radius: 16px;
     box-sizing: border-box;
     text-align: center;
-    background-color: var(--raised-background);
-    color: var(--text-primary);
+    align-items: center;
     display: inline-flex;
     justify-content: center;
-    align-items: center;
     transition: all ease-in-out 300ms;
+    background-color: var(--raised-background);
 
     &:hover {
-        background-color: var(--inverted-background);
         color: var(--menu-background);
+        background-color: var(--inverted-background);
     }
 }
 
 .row {
-    margin-left: 6px !important;
-    margin-right: 6px !important;
+    margin-left: 6px;
+    margin-right: 6px;
 }
 
 hr {
     width: 100%;
-    border-color: rgb(49, 49, 49);
+    border-color: var(--menu-background);
 }
 
-.dropdown {
-    height: 40px;
-    background-color: var(--menu-background);
-    text-align: left;
-    padding: 8px;
+.settings {
+    height: 38px;
+    width: 160px;
     outline: none;
-    border-width: 1px;
+    margin: auto;
+    padding: 0 10px;
+    text-align: center;
+    appearance: none;
+    border-width: 2px;
+    border-radius: 8px;
     border-style: solid;
     border-color: var(--base-background);
-    border-image: initial;
-    border-radius: 8px;
-    margin: auto;
+    background-color: var(--menu-background);
     transition: all ease-in-out 300ms;
 
-    &:focus,
-    &:hover {
-        border-width: 1px;
-        border-style: solid;
+    &:hover:not(.recording) {
         border-color: var(--raised-background);
         background-color: var(--raised-background);
-        border-image: initial;
+    }
+
+    &.input.recording {
+        animation: record 1.5s infinite 0.5s;
+
+        @keyframes record {
+            0% {
+                border-color: var(--base-background);
+            }
+            50% {
+                border-color: #ff0000;
+            }
+            100% {
+                border-color: var(--base-background);
+            }
+        }
     }
 }

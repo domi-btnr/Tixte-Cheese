@@ -14,11 +14,5 @@ export default function App() {
         console.log(store);
         return () => console.log("Updated store");
     }, [store]);
-    return store?.user ? <Dashboard store={store} IPC={IPC} handleChange={handleChange} /> : <Login IPC={IPC} />;
+    return store?.user ? <Dashboard store={store} IPC={IPC} /> : <Login IPC={IPC} />;
 }
-
-const handleChange = (v) => {
-    const name = v.target.name;
-    const value = v.target.value;
-    IPC.send("updateStore", JSON.parse(`{"${name}": "${value}"}`));
-};

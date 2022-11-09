@@ -9,7 +9,7 @@ const store = new Store({
             image: [],
             video: []
         },
-        domain: "test.com",
+        domain: "random",
         authToken: ""
     }
 });
@@ -66,7 +66,6 @@ app.on("window-all-closed", () => {
 });
 
 ipcMain.on("authToken", (_, data) => {
-    data = JSON.parse(data);
     store.set("authToken", data?.access_token)
     ipcMain.emit("authenticate");
 });

@@ -28,7 +28,7 @@ module.exports = async () => {
             })
             const body = await resp.json();
             if (!body.success) return res.redirect(authLink);
-            ipcMain.emit("authToken", null, JSON.stringify(body.data))
+            ipcMain.emit("authToken", null, body.data)
             res.status(200).send("You can now close this window")
         } catch (e) {
             return res.status(500).send(`Internal Server Error: ${e.message}`);
