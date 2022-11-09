@@ -20,7 +20,7 @@ export default function Dashboard(props) {
         if (_keybinds[id].length >= 3) {
             refs[id].current.classList.remove("recording");
             props.IPC.send("updateStore", { keybinds: _keybinds });
-            props.IPC.send("updateKeybind", _keybinds);
+            props.IPC.send("updateKeybinds", _keybinds);
             refs[id].current.blur();
         }
     };
@@ -101,7 +101,7 @@ export default function Dashboard(props) {
                             }
                             onKeyDown={(e) => handleKeydown(e)}
                             onFocus={() => {
-                                props.IPC.send("updateKeybind");
+                                props.IPC.send("updateKeybinds");
                                 setKeybinds({ image: [], video: [...props.store.keybinds.video] });
                                 imageRef.current.classList.add("recording");
                             }}
@@ -110,7 +110,7 @@ export default function Dashboard(props) {
                                 imageRef.current.classList.remove("recording");
                                 if (!keybinds.image.length) return;
                                 props.IPC.send("updateStore", { keybinds: keybinds });
-                                props.IPC.send("updateKeybind", keybinds);
+                                props.IPC.send("updateKeybinds", keybinds);
                             }}
                         />
                     </div>
@@ -130,7 +130,7 @@ export default function Dashboard(props) {
                             }
                             onKeyDown={(e) => handleKeydown(e)}
                             onFocus={() => {
-                                props.IPC.send("updateKeybind");
+                                props.IPC.send("updateKeybinds");
                                 setKeybinds({ image: [...props.store.keybinds.image], video: [] });
                                 videoRef.current.classList.add("recording");
                             }}
@@ -139,7 +139,7 @@ export default function Dashboard(props) {
                                 imageRef.current.classList.remove("recording");
                                 if (!keybinds.image.length) return;
                                 props.IPC.send("updateStore", { keybinds: keybinds });
-                                props.IPC.send("updateKeybind", keybinds);
+                                props.IPC.send("updateKeybinds", keybinds);
                             }}
                         />
                     </div>

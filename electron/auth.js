@@ -1,6 +1,6 @@
 const { ipcMain, shell } = require("electron");
 const { API, AUTH: { URL, ID, SCOPES, REDIRECT } } = require("../config");
-const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
+const fetch = (...args) => import("node-fetch").then(({ default: fetch }) => fetch(...args));
 
 const authLink = `${URL}?client_id=${ID}&scope=${SCOPES.join("+")}&response_type=code&redirect_uri=${REDIRECT}`
 

@@ -45,11 +45,9 @@ const createWindow = () => {
     win.on("close", () => app.dock.hide());
 };
 
-const registerKeybind = (keybind, type) => {
+const addKeybind = (keybind, type) => {
     globalShortcut.register(keybind.join("+"), () => {
-        if (type === "image") {
-            console.log("Image Keybind pressed");
-        }
+        if (type === "image") require("./capture.js").makeImage(store);
         else if (type === "video") {
             console.log("Video Keybind pressed");
         };
@@ -73,7 +71,7 @@ app.on("ready", async () => {
 
     Object.entries(store.get("keybinds")).forEach(obj => {
         if (!obj[1].length) return;
-        registerKeybind(obj[1], obj[0]);
+        addKeybind(obj[1], obj[0]);
     });
 });
 
@@ -97,11 +95,11 @@ ipcMain.on("updateStore", (_, data) => {
     BrowserWindow.getAllWindows()[0].webContents.send("updateStore", storeData)
 });
 
-ipcMain.on("updateKeybind", (_, data) => {
+ipcMain.on("updateKeybinds", (_, data) => {
     globalShortcut.unregisterAll();
     if (!data) return;
     Object.entries(data).forEach(obj => {
         if (!obj[1].length) return;
-        registerKeybind(obj[1], obj[0]);
+        addKeybind(obj[1], obj[0]);
     });
 });
