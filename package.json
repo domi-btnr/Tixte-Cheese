@@ -27,15 +27,16 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
+    "build": "npm run react-build && npm run electron-package",
     "dev": "concurrently -k \"BROWSER=none npm start\" \"npm:electron\"",
     "electron": "wait-on tcp:3000 && electron .",
-    "start:forge": "electron-forge start",
-    "package": "electron-forge package",
-    "make": "electron-forge make"
+    "electron-make": "electron-forge make",
+    "electron-package": "electron-forge package",
+    "electron-start": "electron-forge start",
+    "react-build": "react-scripts build",
+    "react-eject": "react-scripts eject",
+    "react-start": "react-scripts start",
+    "react-test": "react-scripts test"
   },
   "eslintConfig": {
     "extends": [
