@@ -36,11 +36,13 @@ jobs:
           app_path=$(find out -name "Cheese.app" -type d)
           ditto -c -k --sequesterRsrc --keepParent $app_path Cheese.MacOS.zip
       
-      - name: Upload artifact
+      - name: Upload Artifact
         uses: actions/upload-artifact@v3
         with:
-          name: Cheese
-          path: Cheese.MacOS.zip
+          name: artifacts
+          path: |
+            .git
+            Cheese.MacOS.zip
 
   release:
     needs: build
@@ -48,7 +50,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v3
         with:
-          name: Cheese
+          name: artifacts
 
       - name: Get Current Date
         run: echo "::set-output name=date::$(date "+%d.%m.%Y")"
