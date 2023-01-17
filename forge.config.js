@@ -1,7 +1,7 @@
 module.exports = {
   packagerConfig: {
     icon: "public/icon.icns",
-    appBundleId: "me.bambus.cheese",
+    appBundleId: "dev.domi-btnr.cheese",
     name: "Cheese",
     executableName: "Cheese"
   },

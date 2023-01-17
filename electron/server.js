@@ -11,7 +11,7 @@ module.exports = async () => {
     server.get("/login", async (req, res) => {
         if (!req.query.code) return res.redirect(authLink);
         try {
-            const resp = await fetch("http://tixte.bambus.me:6050/auth", {
+            const resp = await fetch("https://tixte-auth.domi-btnr.dev/auth", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
