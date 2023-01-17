@@ -20,7 +20,7 @@ jobs:
         env:
           cache-name: cache-node-modules
         with:
-          path: ~/.npm
+          path: node_modules
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
@@ -34,7 +34,7 @@ jobs:
         run: | 
           npm run build
           app_path=$(find out -name "Cheese.app" -type d)
-          zip -r Cheese.MacOS.zip $app_path
+          ditto -c -k --sequesterRsrc --keepParent $app_path Cheese.MacOS.zip
       
       - name: Upload artifact
         uses: actions/upload-artifact@v3
@@ -50,13 +50,12 @@ jobs:
         with:
           name: Cheese
 
-      - name: Create the release
-        uses: softprops/action-gh-release@1e07f4398721186383de40550babbdf2b84acfc5 # v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          name: ${{ github.ref_name }}
-          prerelease: false
-          draft: false
-          files: |
-            Cheese.MacOS.zip
+      - name: Get Current Date
+        run: echo "::set-output name=date::$(date "+%d.%m.%Y")"
+        id: date
+
+      - name: Create Release
+        run: gh release create ${{ steps.date.outputs.date }} --name ${{ steps.date.outputs.date }}
+
+      - name: Upload File
+        run: gh release upload ${{ steps.date.outputs.date }} --name Cheese.MacOS.zip --file Cheese.MacOS.zip
