@@ -2,7 +2,7 @@ name: Release
 on: [push]
 
 jobs:
-  build-and-release:
+  build:
     if: "contains(github.event.head_commit.message, '[Release] ')"
     runs-on: macos-latest
     steps:
@@ -35,15 +35,28 @@ jobs:
           npm run build
           app_path=$(find out -name "Cheese.app" -type d)
           zip -r Cheese.MacOS.zip $app_path
+      
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Cheese
+          path: Cheese.MacOS.zip
 
-      - name: Get changes since last release
-        id: changes
-        uses: simbo/changes-since-last-release-action@v1
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: Cheese
 
-      - name: Release App
-        run: |
-          app_path=$(find out -name "Cheese.zip" -type d)
-          title=$(echo "${{ github.event.head_commit.message }}" | sed "s/\[Release\] //g")
-          gh release create date+"%Y-%m-%d" $app_path --title "$title" --notes "${{ steps.changes.outputs.log }}"
+      - name: Create the release
+        uses: softprops/action-gh-release@1e07f4398721186383de40550babbdf2b84acfc5 # v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          name: ${{ github.ref_name }}
+          prerelease: false
+          draft: false
+          files: |
+            Cheese.MacOS.zip
