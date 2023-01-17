@@ -56,6 +56,10 @@ jobs:
 
       - name: Create Release
         run: gh release create ${{ steps.date.outputs.date }} --generate-notes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload File
         run: gh release upload ${{ steps.date.outputs.date }} --name Cheese.MacOS.zip --file Cheese.MacOS.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
