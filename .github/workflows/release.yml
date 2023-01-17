@@ -55,7 +55,7 @@ jobs:
         id: date
 
       - name: Create Release
-        run: gh release create ${{ steps.date.outputs.date }} --name ${{ steps.date.outputs.date }}
+        run: gh release create ${{ steps.date.outputs.date }} --generate-notes
 
       - name: Upload File
         run: gh release upload ${{ steps.date.outputs.date }} --name Cheese.MacOS.zip --file Cheese.MacOS.zip
