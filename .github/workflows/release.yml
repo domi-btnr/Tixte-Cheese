@@ -33,7 +33,8 @@ jobs:
       - name: Build and Package
         run: | 
           npm run build
-          zip -r Cheese.MacOS.zip Cheese.app
+          app_path=$(find out -name "Cheese.app" -type d)
+          zip -r Cheese.MacOS.zip $app_path
 
       - name: Get changes since last release
         id: changes
