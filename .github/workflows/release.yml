@@ -13,12 +13,27 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16
-      
+
+      - name: Cache node modules
+        id: cache-npm
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
       - name: Install dependencies
         run: npm install --include=dev
 
       - name: Build and Package
-        run: npm run build
+        run: | 
+          npm run build
+          zip -r Cheese.MacOS.zip Cheese.app
 
       - name: Get changes since last release
         id: changes
@@ -26,7 +41,7 @@ jobs:
 
       - name: Release App
         run: |
-          app_path=$(find out -name "Cheese.app" -type d)
+          app_path=$(find out -name "Cheese.zip" -type d)
           title=$(echo "${{ github.event.head_commit.message }}" | sed "s/\[Release\] //g")
           gh release create date+"%Y-%m-%d" $app_path --title "$title" --notes "${{ steps.changes.outputs.log }}"
         env:
