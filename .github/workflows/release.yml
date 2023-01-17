@@ -56,12 +56,9 @@ jobs:
         run: echo "::set-output name=date::$(date "+%d.%m.%Y")"
         id: date
 
-      - name: Create Release
-        run: gh release create ${{ steps.date.outputs.date }} --generate-notes
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload File
-        run: gh release upload ${{ steps.date.outputs.date }} --clobber Cheese.MacOS.zip
+      - name: Make Release
+        run: |
+          gh release upload ${{ steps.date.outputs.date }} --clobber Cheese.MacOS.zip
+          gh release edit ${{ steps.date.outputs.date }} --title "Cheese ${{ steps.date.outputs.date }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
